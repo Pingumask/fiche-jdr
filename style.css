@@ -1,0 +1,159 @@
+* {
+    box-sizing: border-box;
+    transition: scale 500ms;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --neutral-00: hsl(0, 0%, 100%);
+    --neutral-01: hsl(0, 0%, 90%);
+    --neutral-02: hsl(0, 0%, 80%);
+    --neutral-03: hsl(0, 0%, 70%);
+    --neutral-04: hsl(0, 0%, 60%);
+    --neutral-05: hsl(0, 0%, 50%);
+    --neutral-06: hsl(0, 0%, 40%);
+    --neutral-07: hsl(0, 0%, 30%);
+    --neutral-08: hsl(0, 0%, 20%);
+    --neutral-09: hsl(0, 0%, 10%);
+    --neutral-10: hsl(0, 0%, 0%);
+    --radius: 0.75rem;
+    color-scheme: dark;
+}
+
+body {
+    background-color: var(--neutral-09);
+    color: var(--neutral-01);
+    min-height: 100vh;
+    gap: 2em;
+    font-family: Roboto, system-ui, sans-serif;
+    padding-bottom: 3rem;
+}
+
+
+
+main {
+    padding: 2rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3.5rem;
+    line-height: 3.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+#mode {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    font-size: 2.5rem;
+    padding-block: 0.25rem;
+    aspect-ratio: 1;
+    cursor: pointer;
+}
+
+#tuto {
+    display: none;
+
+    #stats:empty+& {
+        display: block;
+    }
+}
+
+dialog::backdrop {
+    background: #000c;
+}
+
+#stats button,
+footer button,
+#add {
+    background: var(--neutral-08);
+    display: block;
+    width: 100%;
+    border: 2px solid currentColor;
+    border-radius: var(--radius);
+    padding: 0.25rem auto;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    color: hsl(var(--hue), 100%, 80%);
+    background-color: hsla(var(--hue), 50%, 50%, 60%);
+    font-size: 2.5rem;
+    cursor: pointer;
+
+    &:hover {
+        color: hsl(var(--hue), 100%, 90%);
+        background-color: hsla(var(--hue), 50%, 50%, 70%);
+    }
+}
+
+.stat {
+    & strong {
+        text-transform: capitalize;
+        font-weight: normal;
+        pointer-events: none;
+    }
+
+    & em {
+        padding-left: 0.5rem;
+        font-size: 0.4em;
+        pointer-events: none;
+    }
+}
+
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    scale: 1 0;
+    transform-origin: bottom;
+
+    [data-mode=roll] & {
+        scale: 1 1;
+    }
+
+    & button {
+        width: 6ch;
+        height: 6ch;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        background: var(--neutral-07);
+    }
+}
+
+#editStat {
+    text-align: center;
+}
+
+#statForm {
+    text-align: left;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#add {
+    scale: 0 1;
+    border: 2px dashed var(--neutral-05);
+
+    [data-mode=edit] & {
+        scale: 1 1;
+    }
+}
+
+
+input:user-invalid {
+    outline: 2px solid red;
+}

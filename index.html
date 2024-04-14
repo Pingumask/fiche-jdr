@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./style.css" />
+		<link rel="shortcut icon" href="favicon.svg" type="image/svg+xml" />
+		<script src="./main.js" defer></script>
+		<title>Fiche JDR</title>
+	</head>
+	<body data-mode="edit">
+		<main>
+			<h1>Fiche JDR</h1>
+			<button id="mode">✏️</button>
+			<section id="stats"></section>
+			<article id="tuto">
+				<p>
+					Ceci est une application destinée à gérer simplement une
+					fiche personnage de JDR depuis un mobile avec une base de
+					stats notées en pourcentages.
+				</p>
+				<p>
+					Utilisez le botton suppérieur gauche pour basuler entre les
+					modes "Edition", "Jouer" et "Suppression".
+				</p>
+				<p>
+					En mode Edition, cliquez sur "+" pour ajouter une stat ou
+					sur une stat pour la modifier.
+				</p>
+				<p>
+					En mode "Jouer", cliquez sur une stat ou sur un dé en bas de
+					page pour effectuer un jet.
+				</p>
+				<p>
+					En mode "Suppression, cliquez sur une stat pour la retirer.
+					Attention, cette opération est irrévesible.
+				</p>
+			</article>
+			<button id="add" class="stat" data-stat="" data-value="">➕</button>
+		</main>
+		<dialog id="roll"></dialog>
+		<dialog id="editStat" action="">
+			<form id="statForm">
+				<label for="stat">Stat</label>
+				<input
+					type="text"
+					name="stat"
+					id="stat"
+					placeholder="Nom de la stat"
+					required
+				/>
+				<label for="value">Score</label>
+				<input
+					type="number"
+					min="0"
+					max="100"
+					step="1"
+					name="value"
+					id="value"
+					placeholder="Score"
+					required
+				/>
+				<input type="submit" value="OK" />
+				<input
+					type="reset"
+					onclick="FORM_MODAL.close()"
+					value="Annuler"
+				/>
+				<input type="hidden" name="edit" value="" />
+			</form>
+		</dialog>
+		<footer>
+			<button class="dice" data-sides="4">D4</button>
+			<button class="dice" data-sides="6">D6</button>
+			<button class="dice" data-sides="8">D8</button>
+			<button class="dice" data-sides="10">D10</button>
+			<button class="dice" data-sides="12">D12</button>
+			<button class="dice" data-sides="20">D20</button>
+			<button class="dice" data-sides="100">D100</button>
+		</footer>
+	</body>
+</html>
