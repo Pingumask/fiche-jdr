@@ -3,6 +3,9 @@ const MODE_BTN = document.querySelector('#mode');
 const ROLL_MODAL = document.querySelector('#roll');
 const FORM_MODAL = document.querySelector('#editStat');
 const STAT_FORM = document.querySelector('#statForm');
+const ROLLED_SLOT = document.querySelector('#rolled');
+const DICE_SLOT = document.querySelector('#dice');
+const RESULT_SLOT = document.querySelector('#result');
 
 MODE_BTN.addEventListener('click', switchMode);
 MODE_BTN.addEventListener('touch', switchMode);
@@ -23,7 +26,9 @@ ROLL_MODAL.addEventListener('touch', closeRoll);
 function rollDice(event) {
 	const SIDES = event.target.dataset.sides;
 	const ROLLED = Math.ceil(Math.random() * SIDES);
-	ROLL_MODAL.innerText = `Vous avez lancé 1D${SIDES} et obtenu : ${ROLLED}`;
+	ROLLED_SLOT.innerText = `1D${SIDES}`;
+	DICE_SLOT.innerText = ROLLED;
+	RESULT_SLOT.innerText = '';
 	ROLL_MODAL.showModal();
 }
 
@@ -42,10 +47,25 @@ function clickStat(event) {
 }
 
 function rollStat(event) {
-	const STAT = event.target.dataset.stat;
 	const GOAL = event.target.dataset.value;
 	const ROLLED = Math.ceil(Math.random() * 100);
-	ROLL_MODAL.innerText = `Vous avez fait un jet de ${STAT} et obtenu : ${ROLLED} < ${GOAL} ?`;
+	ROLLED_SLOT.innerText = event.target.dataset.stat;
+	DICE_SLOT.innerText = ROLLED;
+	let result = '';
+	if (ROLLED <= 5) {
+		result = 'Réussite critique';
+		RESULT_SLOT.className = 'critHit';
+	} else if (ROLLED > 95) {
+		result = 'Echec critique';
+		RESULT_SLOT.className = 'critFail';
+	} else if (ROLLED <= GOAL) {
+		result = 'Réussite';
+		RESULT_SLOT.className = 'hit';
+	} else {
+		result = 'Echec';
+		RESULT_SLOT = 'fail';
+	}
+	RESULT_SLOT.innerText = result;
 	ROLL_MODAL.showModal();
 }
 
