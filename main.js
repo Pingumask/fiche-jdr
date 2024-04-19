@@ -7,6 +7,13 @@ const ROLLED_SLOT = document.querySelector('#rolled');
 const DICE_SLOT = document.querySelector('#dice');
 const RESULT_SLOT = document.querySelector('#result');
 
+const STATS_STORE = JSON.parse(localStorage.getItem('stats')) || {};
+setMode(localStorage.getItem('mode') || 'edit');
+
+for (let [stat, value] of Object.entries(STATS_STORE)) {
+	createStatButton(stat, value);
+}
+
 MODE_BTN.addEventListener('click', switchMode);
 MODE_BTN.addEventListener('touch', switchMode);
 
@@ -22,6 +29,25 @@ for (let stat of document.querySelectorAll('.stat')) {
 
 ROLL_MODAL.addEventListener('click', closeRoll);
 ROLL_MODAL.addEventListener('touch', closeRoll);
+
+function createStatButton(stat, value) {
+	let newBtn = document.createElement('button');
+	document.querySelector('#stats').append(newBtn);
+	newBtn.dataset.stat = stat;
+	newBtn.dataset.value = value;
+	console.log(`loading stat ${stat} with value of ${value}`);
+	newBtn.addEventListener('click', clickStat);
+	newBtn.addEventListener('touch', clickStat);
+	let s = document.createElement('strong');
+	let e = document.createElement('em');
+	newBtn.classList.add('stat');
+	s.innerText = stat;
+	e.innerText = `(${value})`;
+	newBtn.append(s);
+	newBtn.append(e);
+	newBtn.dataset.stat = stat;
+	newBtn.dataset.value = value;
+}
 
 function rollDice(event) {
 	const SIDES = event.target.dataset.sides;
@@ -63,7 +89,7 @@ function rollStat(event) {
 		RESULT_SLOT.className = 'hit';
 	} else {
 		result = 'Echec';
-		RESULT_SLOT = 'fail';
+		RESULT_SLOT.className = 'fail';
 	}
 	RESULT_SLOT.innerText = result;
 	ROLL_MODAL.showModal();
@@ -83,26 +109,14 @@ function saveStat(event) {
 	event.preventDefault();
 	let fd = new FormData(STAT_FORM);
 	let edited;
-	if (fd.get('edit') == '') {
-		edited = document.createElement('button');
-		document.querySelector('#stats').append(edited);
-		edited.dataset.stat = fd.get('stat');
-		edited.dataset.value = fd.get('value');
-		edited.addEventListener('click', clickStat);
-		edited.addEventListener('touch', clickStat);
-	} else {
+	if (fd.get('edit') != '') {
 		edited = document.querySelector(`[data-stat=${fd.get('edit')}]`);
-		edited.innerHTML = '';
+		edited.remove();
+		delete STATS_STORE[fd.get('edit')];
 	}
-	let s = document.createElement('strong');
-	let e = document.createElement('em');
-	edited.classList.add('stat');
-	s.innerText = `${fd.get('stat')}`;
-	e.innerText = `(${fd.get('value')})`;
-	edited.append(s);
-	edited.append(e);
-	edited.dataset.stat = fd.get('stat');
-	edited.dataset.value = fd.get('value');
+	createStatButton(fd.get('stat'), fd.get('value'));
+	STATS_STORE[fd.get('stat')] = fd.get('value');
+	localStorage.setItem('stats', JSON.stringify(STATS_STORE));
 	FORM_MODAL.close();
 }
 
@@ -112,6 +126,8 @@ function removeStat(event) {
 			`Êtes-vous sûr de vouloir supprimer ${event.target.dataset.stat} ?`
 		)
 	) {
+		delete STATS_STORE[event.target.dataset.stat];
+		localStorage.setItem('stats', JSON.stringify(STATS_STORE));
 		event.target.remove();
 	}
 }
@@ -121,18 +137,35 @@ function closeRoll() {
 }
 
 function switchMode() {
-	switch (MODE_BTN.innerText) {
-		case '✏️':
-			MODE_BTN.innerText = '🎲';
-			BODY.dataset.mode = 'roll';
+	switch (BODY.dataset.mode) {
+		case 'edit':
+			setMode('roll');
 			break;
-		case '🎲':
-			MODE_BTN.innerText = '❌';
-			BODY.dataset.mode = 'delete';
+		case 'roll':
+			setMode('delete');
 			break;
-		case '❌':
+		case 'delete':
+			setMode('edit');
+			break;
+	}
+}
+
+function setMode(mode) {
+	switch (mode) {
+		case 'edit':
 			MODE_BTN.innerText = '✏️';
 			BODY.dataset.mode = 'edit';
+			localStorage.setItem('mode', 'edit');
+			break;
+		case 'roll':
+			MODE_BTN.innerText = '🎲';
+			BODY.dataset.mode = 'roll';
+			localStorage.setItem('mode', 'roll');
+			break;
+		case 'delete':
+			MODE_BTN.innerText = '❌';
+			BODY.dataset.mode = 'delete';
+			localStorage.setItem('mode', 'delete');
 			break;
 	}
 }
