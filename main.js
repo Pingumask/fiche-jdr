@@ -10,19 +10,19 @@ const RESULT_SLOT = document.querySelector('#result');
 const STATS_STORE = JSON.parse(localStorage.getItem('stats')) || {};
 setMode(localStorage.getItem('mode') || 'edit');
 
-for (let [stat, value] of Object.entries(STATS_STORE)) {
+for (const [stat, value] of Object.entries(STATS_STORE)) {
 	createStatButton(stat, value);
 }
 
 MODE_BTN.addEventListener('click', switchMode);
 MODE_BTN.addEventListener('touch', switchMode);
 
-for (let dice of document.querySelectorAll('.dice')) {
+for (const dice of document.querySelectorAll('.dice')) {
 	dice.addEventListener('click', rollDice);
 	dice.addEventListener('touch', rollDice);
 }
 
-for (let stat of document.querySelectorAll('.stat')) {
+for (const stat of document.querySelectorAll('.stat')) {
 	stat.addEventListener('click', clickStat);
 	stat.addEventListener('touch', clickStat);
 }
@@ -31,15 +31,14 @@ ROLL_MODAL.addEventListener('click', closeRoll);
 ROLL_MODAL.addEventListener('touch', closeRoll);
 
 function createStatButton(stat, value) {
-	let newBtn = document.createElement('button');
+	const newBtn = document.createElement('button');
 	document.querySelector('#stats').append(newBtn);
 	newBtn.dataset.stat = stat;
 	newBtn.dataset.value = value;
-	console.log(`loading stat ${stat} with value of ${value}`);
 	newBtn.addEventListener('click', clickStat);
 	newBtn.addEventListener('touch', clickStat);
-	let s = document.createElement('strong');
-	let e = document.createElement('em');
+	const s = document.createElement('strong');
+	const e = document.createElement('em');
 	newBtn.classList.add('stat');
 	s.innerText = stat;
 	e.innerText = `(${value})`;
@@ -96,7 +95,6 @@ function rollStat(event) {
 }
 
 function editStat(event) {
-	console.log(event);
 	STAT_FORM.querySelector('[name=edit]').value = event.target.dataset.stat;
 	STAT_FORM.querySelector('[name=stat]').value = event.target.dataset.stat;
 	STAT_FORM.querySelector('[name=value]').value = event.target.dataset.value;
@@ -107,7 +105,7 @@ STAT_FORM.addEventListener('submit', saveStat);
 
 function saveStat(event) {
 	event.preventDefault();
-	let fd = new FormData(STAT_FORM);
+	const fd = new FormData(STAT_FORM);
 	let edited;
 	if (fd.get('edit') != '') {
 		edited = document.querySelector(`[data-stat=${fd.get('edit')}]`);
@@ -122,14 +120,15 @@ function saveStat(event) {
 
 function removeStat(event) {
 	if (
-		confirm(
+		!confirm(
 			`Êtes-vous sûr de vouloir supprimer ${event.target.dataset.stat} ?`
 		)
 	) {
-		delete STATS_STORE[event.target.dataset.stat];
-		localStorage.setItem('stats', JSON.stringify(STATS_STORE));
-		event.target.remove();
+		return;
 	}
+	delete STATS_STORE[event.target.dataset.stat];
+	localStorage.setItem('stats', JSON.stringify(STATS_STORE));
+	event.target.remove();
 }
 
 function closeRoll() {
